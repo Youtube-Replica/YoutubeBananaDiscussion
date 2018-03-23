@@ -4,15 +4,15 @@ package commands;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Envelope;
+import model.Discussion;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.xml.stream.events.Comment;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class RetrieveComment extends Command {
+public class RetrieveDiscussion extends Command {
    public void execute() {
        HashMap<String, Object> props = parameters;
 
@@ -42,11 +42,11 @@ public class RetrieveComment extends Command {
        Envelope envelope = (Envelope) props.get("envelope");
        String response = "";
        if(flag){
-           System.out.println("Get comments by VIDEO ID");
-           response = model.Comment.getCommentsByVideoID(video_id);
+           System.out.println("Get comments by CHANNEL ID");
+           response = Discussion.getDiscussionByChannelID(video_id);
        }
        else{
-           response = model.Comment.getCommentByID(id);
+           response = Discussion.getDiscussionByID(id);
        }
        try {
            channel.basicPublish("", properties.getReplyTo(), replyProps, response.getBytes("UTF-8"));

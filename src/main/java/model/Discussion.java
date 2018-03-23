@@ -12,18 +12,18 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Comment {
+public class Discussion {
 
-    public static String getCommentByID(int id) {
+    public static String getDiscussionByID(int id) {
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
+        String collectionName = "discussion";
         JSONObject commentObjectM = new JSONObject();
         try {
             BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("" + id,
                     BaseDocument.class);
 
-            commentObjectM.put("Video ID",myDocument.getAttribute("video_id"));
+            commentObjectM.put("Channel ID",myDocument.getAttribute("channel_id"));
             commentObjectM.put("Text",myDocument.getAttribute("text"));
             commentObjectM.put("Likes",myDocument.getAttribute("likes"));
             commentObjectM.put("Dislikes",myDocument.getAttribute("dislikes"));
@@ -37,16 +37,16 @@ public class Comment {
         return commentObjectM.toString();
     }
 
-    public static String getCommentsByVideoID(int id) {
+    public static String getDiscussionByChannelID(int id) {
         System.out.println("ID: " + id);
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
+        String collectionName = "discussion";
         JSONObject allCommentsReturned = new JSONObject();
 
         try {
             String query = "FOR doc IN comments\n" +
-                    "        FILTER doc.`video_id` == @value\n" +
+                    "        FILTER doc.`channel_id` == @value\n" +
                     "        RETURN doc";
             Map<String, Object> bindVars = new MapBuilder().put("value", id).get();
             System.out.println("Bind vars:");
@@ -66,11 +66,11 @@ public class Comment {
                     new_id = Integer.parseInt(cursor2.getKey());
 
 //                    searchObjectM.put("Video ID",myDocument2.getAttribute("video_id"));
-                    searchObjectM.put("Video ID",new_id);
+                    searchObjectM.put("Channel ID",new_id);
                     searchObjectM.put("Text",myDocument2.getAttribute("text"));
                     searchObjectM.put("Likes",myDocument2.getAttribute("likes"));
                     searchObjectM.put("Dislikes",myDocument2.getAttribute("dislikes"));
-                    searchObjectM.put("Channel ID",myDocument2.getAttribute("user"));
+                    searchObjectM.put("User Channel ID",myDocument2.getAttribute("user"));
                     searchObjectM.put("Mentions IDs",myDocument2.getAttribute("mentions"));
                     searchObjectM.put("Reply IDs",myDocument2.getAttribute("replies"));
 
@@ -85,12 +85,12 @@ public class Comment {
         return allCommentsReturned.toString();
     }
 
-    public static String createComment(int video_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
+    public static String createDiscussion(int channel_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
+        String collectionName = "discussion";
         BaseDocument myObject = new BaseDocument();
-        myObject.addAttribute("video_id",video_id);
+        myObject.addAttribute("channel_id",channel_id);
         myObject.addAttribute("text",text);
         myObject.addAttribute("likes",likes);
         myObject.addAttribute("dislikes",dislikes);
@@ -108,21 +108,21 @@ public class Comment {
 
 
 
-    public static String deleteCommentByID(int id){
+    public static String deleteDiscussionByID(int id){
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
+        String collectionName = "discussion";
         try {
         arangoDB.db(dbName).collection(collectionName).deleteDocument(""+id);
         }catch (ArangoDBException e){
             System.err.println("Failed to delete document. " + e.getMessage());
         }
-        return "Comment Deleted";
+        return "Discussion Deleted";
     }
     public static String deleteReplyByID(int comment_id,int reply_id){
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
+        String collectionName = "discussion";
         BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("" + comment_id,
                 BaseDocument.class);
         try {
@@ -138,14 +138,14 @@ public class Comment {
         return "Reply Deleted";
         }
 
-    public static String updateComment(int comment_id ,int video_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
+    public static String updateDiscussion(int discussion_id ,int channel_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
         ArangoDB arangoDB = new ArangoDB.Builder().build();
         String dbName = "scalable";
-        String collectionName = "comments";
-        BaseDocument myObject = arangoDB.db(dbName).collection(collectionName).getDocument("" + comment_id,
+        String collectionName = "discussion";
+        BaseDocument myObject = arangoDB.db(dbName).collection(collectionName).getDocument("" + discussion_id,
                 BaseDocument.class);
 
-        myObject.updateAttribute("video_id",video_id);
+        myObject.updateAttribute("channel_id",channel_id);
         myObject.updateAttribute("text",text);
         myObject.updateAttribute("likes",likes);
         myObject.updateAttribute("dislikes",dislikes);
@@ -153,7 +153,7 @@ public class Comment {
         myObject.updateAttribute("mentions",mentions);
         myObject.updateAttribute("replies",replies);
         try {
-            arangoDB.db(dbName).collection(collectionName).deleteDocument(""+comment_id);
+            arangoDB.db(dbName).collection(collectionName).deleteDocument(""+discussion_id);
             arangoDB.db(dbName).collection(collectionName).insertDocument(myObject);
             System.out.println("Document created");
         } catch (ArangoDBException e) {
