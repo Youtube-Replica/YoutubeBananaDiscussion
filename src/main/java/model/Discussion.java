@@ -155,7 +155,7 @@ public class Discussion {
         try {
             arangoDB.db(dbName).collection(collectionName).deleteDocument(""+discussion_id);
             arangoDB.db(dbName).collection(collectionName).insertDocument(myObject);
-            System.out.println("Document created");
+            System.out.println("Document updated");
         } catch (ArangoDBException e) {
             System.err.println("Failed to create document. " + e.getMessage());
         }
