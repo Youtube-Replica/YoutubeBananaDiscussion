@@ -15,7 +15,8 @@ import java.util.Map;
 public class Discussion {
 
     public static String getDiscussionByID(int id) {
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         JSONObject commentObjectM = new JSONObject();
@@ -39,7 +40,8 @@ public class Discussion {
 
     public static String getDiscussionByChannelID(int id) {
         System.out.println("ID: " + id);
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         JSONObject allCommentsReturned = new JSONObject();
@@ -86,7 +88,8 @@ public class Discussion {
     }
 
     public static String createDiscussion(int channel_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         BaseDocument myObject = new BaseDocument();
@@ -109,7 +112,8 @@ public class Discussion {
 
 
     public static String deleteDiscussionByID(int id){
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         try {
@@ -119,8 +123,10 @@ public class Discussion {
         }
         return "Discussion Deleted";
     }
+
     public static String deleteReplyByID(int comment_id,int reply_id){
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         BaseDocument myDocument = arangoDB.db(dbName).collection(collectionName).getDocument("" + comment_id,
@@ -139,7 +145,8 @@ public class Discussion {
         }
 
     public static String updateDiscussion(int discussion_id ,int channel_id, String text, JSONArray likes, JSONArray dislikes, int user_id, JSONArray mentions, JSONArray replies){
-        ArangoDB arangoDB = new ArangoDB.Builder().build();
+        String host = System.getenv("ARANGO_DB_SERVICE_HOST");
+        ArangoDB arangoDB = new ArangoDB.Builder().host(host, 8529).build();
         String dbName = "scalable";
         String collectionName = "discussion";
         BaseDocument myObject = arangoDB.db(dbName).collection(collectionName).getDocument("" + discussion_id,
